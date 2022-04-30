@@ -82,6 +82,16 @@ Sandsifter can be built with:
 make
 ```
 
+If you have SELinux active, temporarily disable it with the following command:
+```
+sudo setenforce 0
+```
+Once you are finished you can Re-enable SE-Linux with:
+```
+sudo setenforce 1
+```
+
+
 and is then run with 
 
 ```
