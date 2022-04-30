@@ -204,7 +204,7 @@ def disassemble_capstone(arch, data):
         return ("", "")
 
     try:
-        (address, size, mnemonic, op_str) = m.disasm_lite(data, 0, 1).next()
+        (address, size, mnemonic, op_str) = next(m.disasm_lite(data, 0, 1))
     except StopIteration:
         mnemonic="(unk)"
         op_str=""
@@ -345,9 +345,9 @@ def instruction_length(raw):
 
 def print_catalog(c, depth=0):
     for v in c.v:
-        print "  " * (depth) + hexlify(v.raw) + " " + summarize_prefixes(v)
+        print("  " * (depth) + hexlify(v.raw) + " " + summarize_prefixes(v))
     for k in c.d:
-        print "  " * depth + "%02x" % ord(k) + ":"
+        print("  " * depth + "%02x" % ord(k) + ":")
         print_catalog(c.d[k], depth+1)
 
 def strip_prefixes(i, prefixes):
@@ -434,12 +434,12 @@ if __name__ == "__main__":
     instructions = []
     processor = Processor()
 
-    print
-    print "beginning summarization."
-    print "note: this process may take up to an hour to complete, please be patient."
-    print
+    print()
+    print("beginning summarization.")
+    print("note: this process may take up to an hour to complete, please be patient.")
+    print()
 
-    print "loading sifter log:"
+    print("loading sifter log:")
     with open(sys.argv[1], "r") as f:
         lines = f.readlines()
         f.seek(0)
@@ -475,7 +475,7 @@ if __name__ == "__main__":
         prefixes.extend(prefixes_64)
 
     # condense prefixed instructions 
-    print "condensing prefixes:"
+    print("condensing prefixes:")
     all_results = {} # lookup table for condensed result to all results
     d = {} # lookup table for base instruction to instruction summary
     for (c, i) in enumerate(instructions):
@@ -534,7 +534,7 @@ if __name__ == "__main__":
             (c.d[b], bin_progress) = bin(c.d[b], index + 1, base + b, bin_progress, progress_out_of)
         return (c, bin_progress)
 
-    print "binning results:"
+    print("binning results:")
     (c,_) = bin(instructions, 0)
 
     # open first catalog entries
@@ -565,7 +565,7 @@ if __name__ == "__main__":
         if c.v:
             return c.v[0]
         else:
-            return get_solo_leaf(c.d[c.d.keys()[0]])
+            return get_solo_leaf(c.d[list(c.d.keys())[0]])
 
     def build_instruction_summary(c, index=0, summary=None, lookup=None):
         if not summary:
@@ -605,7 +605,7 @@ if __name__ == "__main__":
         gui.box(gui.window, infobox_x, infobox_y, infobox_width, infobox_height, gui.gray(.3))
 
 	#TODO: (minor) this should really be done properly with windows
-        for i in xrange(infobox_y + 1, infobox_y + infobox_height - 1):
+        for i in range(infobox_y + 1, infobox_y + infobox_height - 1):
             gui.window.addstr(i, infobox_x + 1, " " * (infobox_width - 2), gui.gray(0))
 
         if type(o) == Catalog:
@@ -775,13 +775,13 @@ if __name__ == "__main__":
         if key == ord('k'):
             textbox.scroll_up()
         elif key == ord('K'):
-            for _ in xrange(10):
+            for _ in range(10):
                 textbox.scroll_up()
                 smooth_scroll()
         elif key == ord('j'):
             textbox.scroll_down()
         elif key == ord('J'):
-            for _ in xrange(10):
+            for _ in range(10):
                 textbox.scroll_down()
                 smooth_scroll()
         elif key == ord('l'):
@@ -839,20 +839,20 @@ if __name__ == "__main__":
 
     title = "PROCESSOR ANALYSIS SUMMARY"
     width = 50
-    print "=" * width
-    print " " * ((width - len(title)) / 2) + title
-    print "=" * width
-    print
-    print processor.model_name
-    print
-    print " arch:       %d" % processor.architecture
-    print " processor:  %s" % processor.processor
-    print " vendor_id:  %s" % processor.vendor_id
-    print " cpu_family: %s" % processor.cpu_family
-    print " model:      %s" % processor.model
-    print " stepping:   %s" % processor.stepping
-    print " microcode:  %s" % processor.microcode
-    print 
+    print("=" * width)
+    print(" " * ((width - len(title)) / 2) + title)
+    print("=" * width)
+    print()
+    print(processor.model_name)
+    print()
+    print(" arch:       %d" % processor.architecture)
+    print(" processor:  %s" % processor.processor)
+    print(" vendor_id:  %s" % processor.vendor_id)
+    print(" cpu_family: %s" % processor.cpu_family)
+    print(" model:      %s" % processor.model)
+    print(" stepping:   %s" % processor.stepping)
+    print(" microcode:  %s" % processor.microcode)
+    print() 
 
     #TODO:
     # high level summary at end:
@@ -860,5 +860,5 @@ if __name__ == "__main__":
     #   software bugs detected: x
     #   hardware bugs detected: x
     for x in summary:
-        print x
+        print(x)
 
