@@ -168,8 +168,7 @@ search_mode_t mode=TUNNEL;
 void* packet_buffer;
 char* packet;
 
-static char stack[SIGSTKSZ];
-stack_t ss = { .ss_size = SIGSTKSZ, .ss_sp = stack, };
+stack_t ss;
 
 struct {
 	uint64_t dummy_stack_hi[256];
@@ -1448,6 +1447,11 @@ int main(int argc, char** argv)
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
 	*/
+        
+        ss.ss_size = SIGSTKSZ;
+        ss.ss_sp = malloc(SIGSTKSZ);//remember to free this.
+
+        if(ss.ss_sp == NULL) exit(1);
 
 	sigaltstack(&ss, 0);
 
@@ -1513,6 +1517,10 @@ int main(int argc, char** argv)
 		pthread_mutex_destroy(pool_mutex);
 		pthread_mutex_destroy(output_mutex);
 	}
+        
+        free(ss.ss_sp);
+        ss.ss_sp = NULL;
+        ss.ss_size = 0;
 
 	return 0;
 }
